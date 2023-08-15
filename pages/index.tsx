@@ -1,6 +1,10 @@
-import { Button } from "@nextui-org/react";
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
+import { Button, Card, Grid, Row, Text } from "@nextui-org/react";
+
+import { pokeApi } from "@/api";
 import { Layout } from "@/components/layouts";
+import { PokemonListResponse, SmallPokemon } from "@/interfaces";
+import { PokemonCard } from "@/components/pokemons";
 
 interface Props {
   pokemons: SmallPokemon[];
@@ -11,23 +15,16 @@ const HomePage: NextPage<Props> = ({ pokemons }) => {
 
   return (
     <Layout title="Listado de Pokemons">
-      <ul>
+      <Grid.Container gap={2} justify='flex-start' >
         {pokemons.map((poke) => (
-          <>
-            <li key={poke.id}>#{poke.id} | {poke.name}</li>
-            {/* <li>{poke.img}</li> */}
-          </>
+          <PokemonCard key={poke.id} pokemon={poke} />
         ))}
-      </ul>
+      </Grid.Container>
       <Button color="gradient">Click Me</Button>
     </Layout>
   );
 };
 
-import { GetStaticProps } from "next";
-import { pokeApi } from "@/api";
-import { PokemonListResponse, SmallPokemon } from "@/interfaces";
-import Image from "next/image";
 
 // This code only execute from the server side & only can be in a page
 export const getStaticProps: GetStaticProps = async (ctx) => {
@@ -36,9 +33,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const pokemon: SmallPokemon[] = data.results.map((poke, index) => ({
     ...poke,
     id: index + 1,
-    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dram_world/${
-      index + 1
-    }.svg`,
+    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`,
   }));
 
   return {
